@@ -1,0 +1,18 @@
+{
+  "name": "Finance Pigeon — Track your money, calmly",
+  "short_name": "Finance Pigeon",
+  "description": "A calm, clear way to track spending, savings and money goals.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f6f3",
+  "theme_color": "#f7f6f3"
+}
