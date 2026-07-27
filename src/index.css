@@ -1,0 +1,318 @@
+@import "tailwindcss";
+
+/* Dark mode is driven by a class on <html>, set from user settings. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------
+   Design tokens
+
+   Every colour below is a CSS variable, so the whole interface is
+   written once and re-themed by swapping variable values under .dark.
+   The palette is warm paper + evergreen rather than the usual
+   blue/violet dashboard defaults.
+   ------------------------------------------------------------------ */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, "Times New Roman", serif;
+
+  /* Surfaces */
+  --color-canvas: #f7f6f3;
+  --color-surface: #ffffff;
+  --color-sunken: #f2f0eb;
+  --color-line: #e6e3dc;
+  --color-line-strong: #d4d0c6;
+
+  /* Text */
+  /* Contrast on --color-surface: ink 16:1, ink-soft 8:1, ink-faint 5.3:1.
+     ink-faint is the lightest text used anywhere, and still clears AA. */
+  --color-ink: #1b1a17;
+  --color-ink-soft: #55524b;
+  --color-ink-faint: #6f6b61;
+
+  /* Brand / semantic */
+  --color-brand: #1d6152;
+  --color-brand-strong: #164c40;
+  --color-brand-tint: #e6efeb;
+  /* Text/icon colour that sits on a solid brand fill. */
+  --color-on-brand: #ffffff;
+
+  --color-positive: #1d6152;
+  --color-positive-tint: #e6efeb;
+
+  --color-negative: #a8402a;
+  --color-negative-tint: #faeae5;
+
+  --color-warning: #8a5d0f;
+  --color-warning-tint: #fbf1dd;
+
+  --color-info: #2c5f8a;
+  --color-info-tint: #e7eff6;
+
+  /* Categorical series — used by charts and category dots */
+  --color-series-1: #1d6152;
+  --color-series-2: #a8402a;
+  --color-series-3: #9a6b12;
+  --color-series-4: #3f6e8c;
+  --color-series-5: #7a4a6b;
+  --color-series-6: #2e7d7d;
+  --color-series-7: #6b7a3f;
+  --color-series-8: #c4704a;
+
+  --radius-card: 1rem;
+
+  --shadow-card: 0 1px 2px rgba(27, 26, 23, 0.04), 0 1px 3px rgba(27, 26, 23, 0.03);
+  --shadow-raised: 0 4px 12px rgba(27, 26, 23, 0.06), 0 1px 3px rgba(27, 26, 23, 0.04);
+  --shadow-overlay: 0 24px 60px rgba(27, 26, 23, 0.18), 0 4px 12px rgba(27, 26, 23, 0.08);
+}
+
+/* Warm dark theme — a dimmed version of the same paper, never blue-black. */
+.dark {
+  --color-canvas: #141310;
+  --color-surface: #1d1c18;
+  --color-sunken: #26241e;
+  --color-line: #33302a;
+  --color-line-strong: #474339;
+
+  --color-ink: #f4f1ea;
+  --color-ink-soft: #b6b0a3;
+  --color-ink-faint: #8b857a;
+
+  --color-brand: #5ea88f;
+  --color-brand-strong: #7cc0a8;
+  --color-brand-tint: #1c2e28;
+  --color-on-brand: #10231d;
+
+  --color-positive: #5ea88f;
+  --color-positive-tint: #1c2e28;
+
+  --color-negative: #e08b70;
+  --color-negative-tint: #33201a;
+
+  --color-warning: #d9a94a;
+  --color-warning-tint: #2e2617;
+
+  --color-info: #85aecd;
+  --color-info-tint: #1a252e;
+
+  --color-series-1: #5ea88f;
+  --color-series-2: #e08b70;
+  --color-series-3: #d9a94a;
+  --color-series-4: #85aecd;
+  --color-series-5: #c095b1;
+  --color-series-6: #6fc0c0;
+  --color-series-7: #a8b878;
+  --color-series-8: #e0a183;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-raised: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --shadow-overlay: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Money and dates line up in columns. */
+  .tnum,
+  table {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: var(--color-brand);
+    color: #fff;
+  }
+
+  /* One focus style for the entire app. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Native date/number controls follow the theme instead of staying white. */
+  .dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) opacity(0.7);
+  }
+}
+
+@layer components {
+  /* Panels ------------------------------------------------------- */
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Controls ----------------------------------------------------- */
+  .field {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    font-size: 1rem;
+    line-height: 1.4;
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    border: 1px solid var(--color-line-strong);
+    border-radius: 0.7rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .field::placeholder {
+    color: var(--color-ink-faint);
+  }
+
+  .field:hover:not(:disabled) {
+    border-color: var(--color-ink-faint);
+  }
+
+  .field:focus {
+    outline: none;
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 18%, transparent);
+  }
+
+  select.field {
+    appearance: none;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237e7a71' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    background-size: 1.05rem;
+  }
+
+  .dark select.field {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b857a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+
+  .label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+  }
+
+  /* Small uppercase key over a value. Kept at 13px + wide tracking so
+     it stays legible rather than shrinking into noise. */
+  .eyebrow {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+}
+
+/* Scrollbars --------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-line-strong);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-ink-faint);
+}
+
+/* Motion -------------------------------------------------------- */
+@keyframes fp-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fp-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fp-scale-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-up {
+  animation: fp-fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade {
+  animation: fp-fade 0.2s ease both;
+}
+
+.animate-scale-in {
+  animation: fp-scale-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Recharts inherits our type instead of its own defaults. */
+.recharts-wrapper text {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.recharts-surface:focus {
+  outline: none;
+}
